@@ -1,0 +1,170 @@
+Docker Learning Notebook
+
+1. Verify Docker Installation
+
+docker ps
+
+Purpose
+Displays the list of currently running Docker containers.
+---
+
+2. Refresh Docker Group Permission
+
+newgrp docker
+
+Purpose
+
+Applies Docker group permission changes without logging out and back in.
+---
+
+# Working with Docker Images
+
+3. Pull Alpine Linux Image
+
+docker pull alpine:3.22.4
+
+Purpose
+
+Downloads the lightweight Alpine Linux image from Docker Hub.
+---
+
+5. List Downloaded Images
+
+
+docker images
+
+Purpose
+
+Displays all Docker images available locally.
+---
+
+6. Pull BusyBox Image
+
+docker pull busybox:stable-uclibc
+
+Purpose
+
+Downloads the BusyBox lightweight Linux utility image.
+---
+
+Running Containers
+
+7. Run Alpine Container
+
+docker run alpine:3.22.4
+
+Purpose
+
+Starts a temporary Alpine Linux container.
+
+Note
+
+Since no command is provided, the container starts and exits immediately.
+---
+
+8. Check All Containers
+
+
+docker ps -a
+
+
+Purpose
+
+Shows both running and stopped containers.
+---
+
+9. Run Nginx Container
+
+
+docker run nginx
+
+
+Purpose
+
+Runs an Nginx web server container.
+
+Note
+
+Without port mapping, the website is not accessible from the browser.
+
+---
+
+# Port Mapping in Docker
+
+10. Run Nginx with Port Mapping
+
+docker run -p 80:80 nginx
+
+Purpose
+
+Maps:
+
+* Host Port → 80
+* Container Port → 80
+
+Access Website
+
+
+http://SERVER_IP
+---
+
+11. Port Conflict Example
+
+
+docker run -p 80:80 nginx
+
+
+Possible Error
+
+Port `80` is already in use by another service or container.
+---
+
+# Using Alternative Ports
+
+12. Run Nginx on Custom Port
+
+
+docker run -p 8089:80 nginx
+
+
+Purpose
+
+Maps:
+
+* Host Port → 8089
+* Container Port → 80
+
+Access Website
+
+
+http://SERVER_IP:8089
+---
+
+Detached Mode
+
+13. Run Nginx in Background
+
+
+docker run -d -p 8089:80 nginx
+
+
+ Options Used
+
+| Option | Meaning                                   |
+| ------ | ----------------------------------------- |
+| `-d`   | Run container in detached/background mode |
+| `-p`   | Port mapping                              |
+
+---
+
+Important Docker Commands Summary
+
+| Command                                | Description                 |
+| -------------------------------------- | --------------------------- |
+| `docker ps`                            | List running containers     |
+| `docker ps -a`                         | List all containers         |
+| `docker images`                        | List images                 |
+| `docker pull <image>`                  | Download image              |
+| `docker run <image>`                   | Run container               |
+| `docker run -d <image>`                | Run container in background |
+| `docker run -p HOST:CONTAINER <image>` | Port mapping                |
