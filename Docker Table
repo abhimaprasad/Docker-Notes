@@ -1,0 +1,65 @@
+# Docker Command Reference Table
+
+| Command                                                         | Description                                                               |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `docker ps`                                                     | List running containers                                                   |
+| `docker ps -a`                                                  | List all containers including stopped containers                          |
+| `docker images`                                                 | List locally available Docker images                                      |
+| `docker image ls`                                               | Alternative command to list Docker images                                 |
+| `docker pull <image>`                                           | Download Docker image from Docker Hub                                     |
+| `docker pull alpine:3.22.4`                                     | Pull Alpine Linux image                                                   |
+| `docker pull nginx`                                             | Pull Nginx image                                                          |
+| `docker run <image>`                                            | Create and start container                                                |
+| `docker run -d <image>`                                         | Run container in detached/background mode                                 |
+| `docker run -p HOST:CONTAINER <image>`                          | Map host port to container port                                           |
+| `docker run -itd --name webapp01 -p 8080:80 nginx`              | Run Nginx container with custom name and port mapping                     |
+| `docker exec -it <container> /bin/bash`                         | Access container terminal interactively                                   |
+| `docker exec <container> ls`                                    | List files/directories inside container                                   |
+| `docker exec <container> mkdir sample`                          | Create directory inside container                                         |
+| `docker cp index.html <container>:/sample`                      | Copy file from host to container                                          |
+| `echo "hello" > /usr/share/nginx/html/index.html`               | Create or modify Nginx web page                                           |
+| `docker info`                                                   | Display Docker system information                                         |
+| `docker inspect <container_or_image>`                           | Show detailed container/image information                                 |
+| `docker image inspect alpine:latest`                            | Inspect Docker image details                                              |
+| `docker history customimage:v1`                                 | Show Docker image layer history                                           |
+| `docker commit <container> customimage:v1`                      | Create image from container                                               |
+| `docker save -o customimage.tar customimage:v1`                 | Save Docker image as tar archive                                          |
+| `docker load -i customimage.tar`                                | Load Docker image from tar file                                           |
+| `docker tag webapp:v1 abhima/webapp:v1`                         | Create new tag for Docker image                                           |
+| `docker login -u <username>`                                    | Login to Docker Hub                                                       |
+| `docker push abhima/webapp:v1`                                  | Push Docker image to Docker Hub                                           |
+| `docker rmi <image_id>`                                         | Remove Docker image                                                       |
+| `docker rmi -f <image_id>`                                      | Force remove Docker image                                                 |
+| `docker stop <container>`                                       | Stop running container                                                    |
+| `docker rm $(docker ps -aq)`                                    | Remove all containers                                                     |
+| `docker image prune -a`                                         | Remove unused Docker images                                               |
+| `docker system prune -a`                                        | Remove unused containers, networks and images                             |
+| `docker logs -f <container>`                                    | View live container logs                                                  |
+| `docker stats`                                                  | View real-time container resource usage                                   |
+| `docker diff <container>`                                       | Show file changes inside container                                        |
+| `docker build -t webapp:v1 .`                                   | Build Docker image using Dockerfile                                       |
+| `docker volume ls`                                              | List Docker volumes                                                       |
+| `docker volume create data_web`                                 | Create Docker volume                                                      |
+| `docker volume inspect data_web`                                | Inspect Docker volume details                                             |
+| `docker volume rm data_web`                                     | Remove Docker volume                                                      |
+| `docker network ls`                                             | List Docker networks                                                      |
+| `docker network create mynet`                                   | Create custom Docker network                                              |
+| `docker network inspect mynet`                                  | Inspect Docker network                                                    |
+| `docker network connect mynet web-app`                          | Connect container to custom network                                       |
+| `docker network disconnect bridge web-app`                      | Disconnect container from network                                         |
+| `docker exec <container> ping <ip>`                             | Test network connectivity between containers                              |
+| `docker system df`                                              | Display Docker disk usage statistics                                      |
+| `docker run -itd --restart unless-stopped busybox`              | Run BusyBox container in interactive detached mode with automatic restart |
+| `docker rename serene_mclean newapp`                            | Rename existing container from `serene_mclean` to `newapp`                |
+| `docker pause newapp`                                           | Pause all running processes inside container `newapp`                     |
+| `docker unpause newapp`                                         | Resume paused container `newapp`                                          |
+| `docker exec 53cd apt update`                                   | Update package index inside container                                     |
+| `docker exec 53cd sh -c "apt update && apt install -y apache2"` | Install Apache2 inside Ubuntu/Debian-based container                      |
+| `docker run -itd alpine`                                        | Run Alpine Linux container in detached interactive mode                   |
+| `docker exec 05d6 sh -c "apk update && apk add apache2"`        | Install Apache2 inside Alpine Linux container                             |
+| `docker exec 53cd nginx -h`                                     | Display Nginx help information inside container                           |
+| `docker exec 53cd nginx -V`                                     | Display Nginx version and build details                                   |
+| `docker exec 53cd7 ls`                                          | List files/directories inside container                                   |
+| `docker exec 53cd7 mkdir -pv /doc/wroot`                        | Create directory `/doc/wroot` inside container with parent directories    |
+| `docker exec 53cd nginx -t -p /doc/wroot`                       | Test Nginx configuration with custom prefix path                          |
+| `docker exec 0567 sh -c "apk add --no-cache nginx"`             | Install Nginx inside Alpine container without cache                       |
