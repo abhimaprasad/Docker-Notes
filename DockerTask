@@ -1,0 +1,138 @@
+**thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ cat Dockerfile 
+FROM alpine:latest
+RUN apk update && apk add nginx
+COPY index.html /usr/share/nginx/html/index.html
+COPY default.conf /etc/nginx/http.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ cat index.html 
+<h1> hellooooooooooooooooooooo</h1>**
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ 
+
+
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ ll
+total 20
+drwxrwxr-x  2 thinkbook thinkbook 4096 May 24 22:45 ./
+drwxr-x--- 36 thinkbook thinkbook 4096 May 24 22:45 ../
+-rw-rw-r--  1 thinkbook thinkbook  258 May 24 21:22 default.conf
+-rw-rw-r--  1 thinkbook thinkbook  194 May 24 22:45 Dockerfile
+-rw-rw-r--  1 thinkbook thinkbook   36 May 24 21:26 index.html
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ pwd
+/home/thinkbook/ComputronTask
+
+
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker build -t mynginx .
+[+] Building 0.9s (9/9) FINISHED                                                                                                                                          docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                                0.0s
+ => => transferring dockerfile: 233B                                                                                                                                                0.0s
+ => [internal] load metadata for docker.io/library/alpine:latest                                                                                                                    0.7s
+ => [internal] load .dockerignore                                                                                                                                                   0.0s
+ => => transferring context: 2B                                                                                                                                                     0.0s
+ => [1/4] FROM docker.io/library/alpine:latest@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11                                                              0.0s
+ => => resolve docker.io/library/alpine:latest@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11                                                              0.0s
+ => [internal] load build context                                                                                                                                                   0.0s
+ => => transferring context: 63B                                                                                                                                                    0.0s
+ => CACHED [2/4] RUN apk update && apk add nginx                                                                                                                                    0.0s
+ => CACHED [3/4] COPY index.html /usr/share/nginx/html/index.html                                                                                                                   0.0s
+ => CACHED [4/4] COPY default.conf /etc/nginx/http.d/default.conf                                                                                                                   0.0s
+ => exporting to image                                                                                                                                                              0.0s
+ => => exporting layers                                                                                                                                                             0.0s
+ => => exporting manifest sha256:f9196da9ddd464543129c10c0864c0f0b3fdc25b41145b59d41a440544a226e0                                                                                   0.0s
+ => => exporting config sha256:9fef4440fa8e3ca9a0da0f6887d7c34f4931ec118d7aad0a3b350bcce673a946                                                                                     0.0s
+ => => exporting attestation manifest sha256:6d3df944c79b5c63bbe5e2cb572b8cd232d2aaa60f92249ad335db36c5a9d829                                                                       0.0s
+ => => exporting manifest list sha256:726cb4d9383cb02f630a4939dbc6f04654fb6048e762edb2ef86a07a631ae93c                                                                              0.0s
+ => => naming to docker.io/library/mynginx:latest                                                                                                                                   0.0s
+ => => unpacking to docker.io/library/mynginx:latest                                                                      
+
+
+ thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker run -d -p 8085:80 --name task mynginx:latest 
+08ede7355013f656c1d1eba8292ecdb8cd0ab2c62adcfa71df2126360fe155da
+
+
+
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker tag mynginx:latest abhima/mynginx:v1
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker login -u 
+flag needs an argument: 'u' in -u
+
+Usage:  docker login [OPTIONS] [SERVER]
+
+Run 'docker login --help' for more information
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker login -u  abhima
+
+i Info → A Personal Access Token (PAT) can be used instead.
+         To create a PAT, visit https://app.docker.com/settings
+         
+         
+Password: 
+Login Succeeded
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker push abhima/mynginx:v1 
+The push refers to repository [docker.io/abhima/mynginx]
+22085a49b7aa: Pushed 
+3ddd50a34221: Pushed 
+6a0ac1617861: Pushed 
+1a85d2b252bd: Pushed 
+c306d6e95b03: Pushed 
+v1: digest: sha256:ed4334587d362fcc66544775490688a7056111a943ef04cf790d894ed3c67294 size: 856
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ 
+
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker ps
+CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS          PORTS                                     NAMES
+08ede7355013   mynginx:latest   "nginx -g 'daemon of…"   29 minutes ago   Up 29 minutes   0.0.0.0:8085->80/tcp, [::]:8085->80/tcp   task
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker stop 08ede
+08ede
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker images
+                                                                                                                                                                     i Info →   U  In Use
+IMAGE               ID             DISK USAGE   CONTENT SIZE   EXTRA
+abhima/mynginx:v1   ed4334587d36       21.9MB         7.65MB    U   
+mynginx:latest      ed4334587d36       21.9MB         7.65MB    U   
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker system prune -a
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all images without at least one container associated to them
+  - all build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+08ede7355013f656c1d1eba8292ecdb8cd0ab2c62adcfa71df2126360fe155da
+
+Deleted Images:
+untagged: abhima/mynginx:v1
+untagged: mynginx:latest
+deleted: sha256:ed4334587d362fcc66544775490688a7056111a943ef04cf790d894ed3c67294
+deleted: sha256:a872886804f9be0b3a0863c00d2f3d1e494e472da644df9a05aeb6e783b0815b
+deleted: sha256:b1ffb77298bf4dd8e44821fcf948c5ccd48d950597e7138b64d28fba316998cc
+
+Deleted build cache objects:
+7c3nner2jcy44ustbu4yiz1i6
+tvfgduwrcsf6k1fvzusu1cnxv
+e6yuoqfd3qfpmqp9iguicgmwn
+8fz622vgiirbuxsy2cs2bvita
+4qs1t1lhslat6wns5snwpvix3
+vin5b9t1zsz9gzy7lxdscilqq
+zpk5ey00qbatibrng1452k06l
+
+Total reclaimed space: 22.06MB
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker images
+                                                                                                                                                                     i Info →   U  In Use
+IMAGE   ID             DISK USAGE   CONTENT SIZE   EXTRA
+
+
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker pull abhima/mynginx:v1
+v1: Pulling from abhima/mynginx
+3ddd50a34221: Pull complete 
+1a85d2b252bd: Pull complete 
+6a0ac1617861: Pull complete 
+c306d6e95b03: Pull complete 
+22085a49b7aa: Download complete 
+Digest: sha256:ed4334587d362fcc66544775490688a7056111a943ef04cf790d894ed3c67294
+Status: Downloaded newer image for abhima/mynginx:v1
+docker.io/abhima/mynginx:v1
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker images
+                                                                                                                                                                     i Info →   U  In Use
+IMAGE               ID             DISK USAGE   CONTENT SIZE   EXTRA
+abhima/mynginx:v1   ed4334587d36       21.9MB         7.65MB        
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ docker run -itd -d -p 8085:80 --name newapp abhima/mynginx:v1 
+bb885c3ef9f5241c6ae2b48474359b3fec144b6bc03491bf2e218755f3f58d3a
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/ComputronTask$ 
+
