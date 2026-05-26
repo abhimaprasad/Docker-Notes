@@ -1,0 +1,2 @@
+Dynamic port range for Docker 32768 to 60999.
+The Range for windows/Mac: 49152 through 65535
