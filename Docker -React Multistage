@@ -26,3 +26,9 @@ server {
     }
 }
 thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/React/react_proj01$ 
+
+vi default.conf
+docker build -t reactapp .
+docker images
+docker run -d -p 80:80 --name react reactapp:latest 
+
