@@ -1,0 +1,6 @@
+| Command                  | Purpose                                                                                 |
+| ------------------------ | --------------------------------------------------------------------------------------- |
+| `docker compose up -d`   | Create and start all services defined in the Compose file in detached (background) mode |
+| `docker compose ps`      | Display the status of containers managed by the current Compose project                 |
+| `docker compose down`    | Stop and remove containers, networks, and resources created by Compose                  |
+| `docker compose down -v` | Stop and remove containers, networks, and associated volumes for a complete cleanup     |
