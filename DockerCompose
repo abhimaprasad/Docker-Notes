@@ -4,3 +4,44 @@
 | `docker compose ps`      | Display the status of containers managed by the current Compose project                 |
 | `docker compose down`    | Stop and remove containers, networks, and resources created by Compose                  |
 | `docker compose down -v` | Stop and remove containers, networks, and associated volumes for a complete cleanup     |
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/DockerCompose$ cat docker-compose.yml 
+---
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "9081:80"
+    volumes:
+      - newapp:/usr/share/nginx/html
+
+  web2:
+    image: nginx:alpine
+    ports: 
+      - "9082:80"
+    volumes:
+      - newapp2:/usr/share/nginx/html
+
+volumes:
+  newapp:  
+  newapp2:
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ docker compose up -d
+ docker run -d -p 8767:80 --name reactapp react_proj01-reactapp:latest 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/DockerCompose/BuildTest$ cat Dockerfile 
+FROM alpine:latest
+RUN apk update && apk add nginx
+COPY index.html /usr/share/nginx/html/index.html
+COPY default.conf /etc/nginx/http.d/default.conf
+EXPOSE 80
+CMD ["nginx","-g","daemon off;"] 
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/DockerCompose/BuildTest$ cat docker-compose.yaml 
+---
+services:
+  webapp:
+    build: .
+    ports:
+      - "8978:80"
+
