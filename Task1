@@ -1,0 +1,70 @@
+hinkbook@thinkbook-ThinkBook-14-G6-IRL:~/Network$ ll
+total 28
+drwxrwxr-x  3 thinkbook thinkbook 4096 Jun  8 16:39 ./
+drwxr-x--- 43 thinkbook thinkbook 4096 Jun  8 16:33 ../
+-rw-rw-r--  1 thinkbook thinkbook  487 Jun  8 15:37 app.py
+-rw-rw-r--  1 thinkbook thinkbook  184 Jun  8 15:46 docker-compose.yaml
+-rw-rw-r--  1 thinkbook thinkbook  171 Jun  8 16:33 Dockerfile
+-rw-rw-r--  1 thinkbook thinkbook    0 Jun  8 16:33 docker.log
+drwxr-xr-x  2 root      root      4096 Jun  8 15:38 html/
+-rw-rw-r--  1 thinkbook thinkbook   13 Jun  8 15:35 requirements.txt
+-rw-rw-r--  1 thinkbook thinkbook    0 Jun  8 16:33 test
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/Network$ cat app.py 
+from flask import Flask, jsonify
+import socket
+import os
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return {
+        "message": "Hello from Dockerized Python App 🚀",
+        "hostname": socket.gethostname(),
+        "ip": socket.gethostbyname(socket.gethostname())
+    }
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "OK"})
+
+@app.route("/env")
+def env():
+    return dict(os.environ)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/Network$ cat docker-compose.yaml 
+---
+name: networkproj
+services:
+  webapp01:
+    build: .
+    ports:
+      - "8090:5000"
+    restart: unless-stopped
+    networks:
+      - pynet
+
+networks:
+  pynet:
+    driver: bridge
+
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/Network$ cat Dockerfile 
+FROM python:3.10.20-slim-trixie
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/Network$ cat requirements.txt 
+flask==3.0.0
+thinkbook@thinkbook-ThinkBook-14-G6-IRL:~/Network$ 
+
+`  
