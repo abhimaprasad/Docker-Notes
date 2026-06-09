@@ -1,0 +1,46 @@
+Docker ENTRYPOINT Example
+
+This project demonstrates how Docker ENTRYPOINT and CMD work together. The Dockerfile uses the debian:trixie-slim base image, installs Vim, creates a working directory /eline, copies the entrypoint.sh script, makes it executable, and sets it as the container's ENTRYPOINT. The script accepts a command-line argument, stores it in the variable NAME, and prints it using echo.
+
+Dockerfile:
+
+FROM debian:trixie-slim
+RUN apt update && apt upgrade -y && apt install vim -y
+WORKDIR /eline
+COPY entrypoint.sh .
+RUN chmod +x /eline/entrypoint.sh
+ENTRYPOINT ["/eline/entrypoint.sh"]
+CMD ["name"]
+
+Entrypoint Script:
+
+#!/usr/bin/env bash
+set -e
+NAME="$1"
+echo "The name is $NAME"
+
+When the container is started using:
+
+docker run myimage
+
+Docker executes:
+
+/eline/entrypoint.sh name
+
+and the output is:
+
+The name is name
+
+If a custom argument is supplied:
+
+docker run myimage Abhima
+
+Docker executes:
+
+/eline/entrypoint.sh Abhima
+
+and the output becomes:
+
+The name is Abhima
+
+This example shows that ENTRYPOINT defines the executable that always runs, while CMD provides default arguments that can be overridden when starting the container.
