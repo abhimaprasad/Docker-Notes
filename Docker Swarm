@@ -1,0 +1,152 @@
+Example user data for the manager node:
+
+#!/bin/bash
+
+hostnamectl set-hostname manager1
+
+apt-get update -y
+apt-get install -y curl
+
+curl -fsSL https://get.docker.com | sh
+
+systemctl enable docker
+systemctl start docker
+
+echo "Docker installed successfully on manager1"
+===============================================================================
+For worker1:
+
+#!/bin/bash
+
+hostnamectl set-hostname worker1
+
+apt-get update -y
+apt-get install -y curl
+
+curl -fsSL https://get.docker.com | sh
+
+systemctl enable docker
+systemctl start docker
+
+echo "Docker installed successfully on worker1"
+===============================================================================
+For worker2:
+
+#!/bin/bash
+
+hostnamectl set-hostname worker2
+
+apt-get update -y
+apt-get install -y curl
+
+curl -fsSL https://get.docker.com | sh
+
+systemctl enable docker
+systemctl start docker
+
+echo "Docker installed successfully on worker2"
+
+===============================================================================
+Add Current User to the Docker Group and Apply Changes Immediately
+
+
+sudo usermod -aG docker $USER && newgrp docker
+
+ubuntu@worker2:~$ sudo usermod -aG docker ubuntu
+ubuntu@worker2:~$ newgrp docker
+
+Alternative:
+
+Grant Docker Privileges to the Current User
+Enable Docker Access Without sudo
+Add User to Docker Group and Refresh Session
+Configure Docker Permissions for the Current User
+===============================================================================
+View All System Users and Groups
+
+getent passwd 
+getent group
+
+Alternative:
+
+List All Users and Groups
+Display User and Group Information
+Check Existing System Users and Groups
+Retrieve User and Group Database Entries
+===============================================================================
+Initialize a Docker Swarm Manager Node
+
+docker swarm init --advertise-addr 172.31.1.226 (private IP of manager node)
+
+Note: The correct flag is --advertise-addr (not --advertise -addr). 
+This command initializes the current node as the Docker Swarm manager and advertises the specified IP address to other nodes joining the swarm.
+===============================================================================
+buntu@manager1:~$ docker swarm init --advertise-addr 172.31.1.226
+Swarm initialized: current node (z3q4gs72xicap9131t1kcd7vd) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-0sugj0c8dmye00kh8p2rlgbdc5l49sesljisccjm75h274vsb4-32o4hsactw2naac7i0edrh2t6 172.31.1.226:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+===============================================================================
+
+Add in Worker1
+
+ubuntu@worker1:~$ docker swarm join --token SWMTKN-1-0sugj0c8dmye00kh8p2rlgbdc5l49sesljisccjm75h274vsb4-32o4hsactw2naac7i0edrh2t6 172.31.1.226:2377
+This node joined a swarm as a worker.
+ubuntu@worker1:~$ 
+===============================================================================
+ubuntu@worker2:~$ docker swarm join --token SWMTKN-1-0sugj0c8dmye00kh8p2rlgbdc5l49sesljisccjm75h274vsb4-32o4hsactw2naac7i0edrh2t6 172.31.1.226:2377
+This node joined a swarm as a worker.
+===============================================================================
+
+Security groups:
+https://snipboard.io/XWi2bA.jpg
+===============================================================================
+Verify Docker Swarm Cluster Status and Remove a Worker Node from the Swarm
+
+ubuntu@manager1:~$ docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+z3q4gs72xicap9131t1kcd7vd *   manager1   Ready     Active         Leader           29.5.3
+h4szrpv8jtqchzkwtyospguva     worker1    Ready     Active                          29.5.3
+joo6tbm3gwnnjqpf2kqz1kf66     worker2    Ready     Active                          29.5.3
+
+ubuntu@worker1:~$ docker swarm leave
+Node left the swarm.
+ubuntu@worker1:~$
+
+Summary: The swarm cluster initially contained one manager (manager1) and two worker nodes (worker1, worker2). 
+The docker swarm leave command was executed on worker1, successfully removing it from the swarm.
+===============================================================================
+
+Create and Verify a Docker Swarm Service
+
+ubuntu@manager1:~$ docker service create --name webapp -p 8080:80 nginx
+ykhu1ohzotekirq2q5f1gaofo
+overall progress: 1 out of 1 tasks
+1/1: running
+verify: Service ykhu1ohzotekirq2q5f1gaofo converged
+
+ubuntu@manager1:~$ docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE          PORTS
+ykhu1ohzotek   webapp    replicated   1/1        nginx:latest   *:8080->80/tcp
+
+ubuntu@manager1:~$
+
+Summary: A Docker Swarm service named webapp was created using the Nginx image and published on port 8080. 
+The service started successfully with 1 replica running.
+===============================================================================
+Inspect a Docker Swarm Service (Detailed and Human-Readable Output)
+
+docker service inspect webapp && docker service inspect webapp --pretty
+===============================================================================
+View the Tasks and Node Placement of a Docker Swarm Service
+
+ubuntu@manager1:~$ docker service ps webapp
+
+ID             NAME       IMAGE          NODE      DESIRED STATE   CURRENT STATE           ERROR     PORTS
+9sr3p7u33w0k   webapp.1   nginx:latest   worker2   Running         Running 3 minutes ago
+
+ubuntu@manager1:~$
+===============================================================================
