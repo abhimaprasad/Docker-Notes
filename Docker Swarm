@@ -150,3 +150,129 @@ ID             NAME       IMAGE          NODE      DESIRED STATE   CURRENT STATE
 
 ubuntu@manager1:~$
 ===============================================================================
+Scale a Docker Swarm Service to 5 Replicas
+
+ubuntu@manager1:~$ docker service scale webapp=5
+webapp scaled to 5
+
+overall progress: 5 out of 5 tasks
+1/5: running
+2/5: running
+3/5: running
+4/5: running
+5/5: running
+
+verify: Service webapp converged
+
+ubuntu@manager1:~$
+
+One-line command:
+
+docker service scale webapp=5
+
+Summary: The webapp service was successfully scaled from 1 to 5 replicas, and Docker Swarm distributed the tasks across available nodes while ensuring all replicas reached the running state.
+===============================================================================
+Update a Docker Swarm Service to Run 3 Replicas
+
+ubuntu@manager1:~$ docker service update --replicas 3 webapp
+webapp
+
+overall progress: 3 out of 3 tasks
+1/3: running
+2/3: running
+3/3: running
+
+verify: Service webapp converged
+
+ubuntu@manager1:~$
+
+One-line command:
+
+docker service update --replicas 3 webapp
+
+Summary: The webapp service was successfully updated to run 3 replicas. 
+Docker Swarm adjusted the service state and ensured that all three tasks reached the running state.
+===============================================================================
+Remove a Docker Swarm Service and Verify Cleanup
+
+ubuntu@manager1:~$ docker service rm webapp
+webapp
+
+ubuntu@manager1:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+ubuntu@manager1:~$ docker service ls
+ID        NAME      MODE      REPLICAS   IMAGE     PORTS
+
+ubuntu@manager1:~$
+
+One-line command:
+
+docker service rm webapp
+
+Summary: The webapp service was successfully removed from the Docker Swarm. 
+Verification shows that no containers are running and no services remain in the swarm cluster.
+===============================================================================
+Deploy a Docker Swarm Service with 6 Replicas and Verify Distribution Across Nodes
+
+ubuntu@manager1:~$ docker service create --name mobapp --replicas 6 -p 8081:80 nginx:alpine
+wadoqwruo3bqojeh0kflm4u6c
+
+overall progress: 6 out of 6 tasks
+1/6: running
+2/6: running
+3/6: running
+4/6: running
+5/6: running
+6/6: running
+
+verify: Service wadoqwruo3bqojeh0kflm4u6c converged
+
+Verify Container Distribution
++++++++++++++++++++++++++
+Manager Node (manager1)
+
+ubuntu@manager1:~$ docker ps
+
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS     NAMES
+c788bff2ce85   nginx:alpine   "/docker-entrypoint.…"   22 seconds ago   Up 21 seconds   80/tcp    mobapp.5.pzoag5cjiiy6m87284h43aaql
+833140ce7350   nginx:alpine   "/docker-entrypoint.…"   23 seconds ago   Up 22 seconds   80/tcp    mobapp.2.0w2azstlyccjov01p6mk96zu6
+
+Worker Node 1
++++++++++++++++++++++++++
+ubuntu@worker1:~$ docker ps
+
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS     NAMES
+d5fb9c932991   nginx:alpine   "/docker-entrypoint.…"   3 seconds ago   Up 3 seconds   80/tcp    mobapp.4.ympm48vln6u40r4lnmy3cbi8a
+c203005ee7d6   nginx:alpine   "/docker-entrypoint.…"   4 seconds ago   Up 4 seconds   80/tcp    mobapp.1.lykpjirujpa9d1ufprmjfhygw
+
+Worker Node 2
++++++++++++++++++++++++++
+ubuntu@worker2:~$ docker ps
+
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS        PORTS     NAMES
+13dc22b9cd25   nginx:alpine   "/docker-entrypoint.…"   2 seconds ago   Up 1 second   80/tcp    mobapp.3.4q1gpjcyfyzxc7p49li5almri
+23af4d8013ff   nginx:alpine   "/docker-entrypoint.…"   2 seconds ago   Up 1 second   80/tcp    mobapp.6.vedm8i974m0wjyzi2bf0pqnbt
+
+Summary: The mobapp service was successfully deployed with 6 replicas using the nginx:alpine image. 
+Docker Swarm automatically distributed the replicas evenly across the manager and worker nodes, demonstrating load balancing and high availability within the cluster.
+===============================================================================
+Scale a Docker Swarm Service Down to 2 Replicas
+
+ubuntu@manager1:~$ docker service scale mobapp=2
+mobapp scaled to 2
+
+overall progress: 2 out of 2 tasks
+1/2: running
+2/2: running
+
+verify: Service mobapp converged
+
+ubuntu@manager1:~$
+
+One-line command:
+
+docker service scale mobapp=2
+
+Summary: The mobapp service was successfully scaled down from 6 replicas to 2 replicas. 
+Docker Swarm automatically removed the excess tasks and maintained the desired state with two running containers.
